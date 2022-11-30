@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "newLine": "LF",
+    "outDir": "dist",
+    "rootDir": ".",
+    "allowJs": true,
+    "target": "es2020",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "experimentalDecorators": true,
+    "jsx": "preserve",
+    "lib": [
+      "esnext",
+      "dom",
+      "es2019",
+      "esnext.array"
+    ],
+    "strict": false,
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": false,
+    "baseUrl": ".",
+    "composite": true
+  },
+  "exclude": [
+    ".git",
+    "node_modules",
+    "**/dist/**/*.js",
+    "babel.config.js",
+    "webpack.*.js"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "time ts-node -r tsconfig-paths/register 2020/${npm_config_day}/part${npm_config_part}.ts",
+    "init": "mkdir -p 2020/${npm_config_day} && cp 2020/1/part1.ts 2020/${npm_config_day} && curl -o 2020/${npm_config_day}/input.txt -H \"Cookie: ${AOC_COOKIE}\" https://adventofcode.com/2020/day/${npm_config_day}/input"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.10",
+    "tsconfig-paths": "^3.9.0"
+  }
+}
