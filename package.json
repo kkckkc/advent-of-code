@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "time ts-node -r tsconfig-paths/register 2020/${npm_config_day}/part${npm_config_part}.ts",
-    "init": "mkdir -p 2020/${npm_config_day} && cp 2020/1/part1.ts 2020/${npm_config_day} && curl -o 2020/${npm_config_day}/input.txt -H \"Cookie: ${AOC_COOKIE}\" https://adventofcode.com/2020/day/${npm_config_day}/input"
+    "start": "time ./node_modules/.bin/ts-node -r tsconfig-paths/register 2022/${npm_config_day}/${npm_config_part}.ts",
+    "test": "nodemon --exec time ./node_modules/.bin/ts-node 2022/${npm_config_day}/${npm_config_part}.ts",
+    "init": "mkdir -p 2022/${npm_config_day} && cp 2022/1/part1.ts 2022/${npm_config_day} && curl -o 2022/${npm_config_day}/input.txt -H \"Cookie: ${AOC_COOKIE}\" https://adventofcode.com/2020/day/${npm_config_day}/input"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.10",
+    "nodemon": "^2.0.20",
     "tsconfig-paths": "^3.14.1"
   }
 }

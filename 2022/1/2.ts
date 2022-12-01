@@ -1,25 +1,22 @@
-import { sum } from 'lib/arrays';
-import {readFile} from "lib/readFile";
+import { readFile } from "lib/readFile";
+import { applyPatches } from "lib/patch";
+applyPatches();
 
 type Input = {
-    values: number[][]
+  values: number[][];
 };
 
 export const parse = (input: string[]): Input => {
-    const values: number[][] = [[]];
-    for (const s of input) {
-        if (s === "") {
-            values.push([]);
-        } else {
-            values.at(-1).push(Number(s));
-        }
-    }
-    return { values };
-}
+  return { values: input.splitOn((e) => e === "").map((e) => e.num()) };
+};
 
 export const solve = (input: Input): number => {
-    const arr = input.values.map(e => sum(e)).sort((a, b) => a - b).reverse();
-    return sum(arr.slice(0, 3));
-}
+  return input.values
+    .map((e) => e.sum())
+    .sortNum()
+    .reverse()
+    .slice(0, 3)
+    .sum();
+};
 
 console.log(solve(parse(readFile(__dirname))));

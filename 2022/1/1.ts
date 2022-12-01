@@ -1,24 +1,17 @@
-import { sum } from 'lib/arrays';
-import {readFile} from "lib/readFile";
+import { readFile } from "lib/readFile";
+import { applyPatches } from "lib/patch";
+applyPatches();
 
 type Input = {
-    values: number[][]
+  values: number[][];
 };
 
 export const parse = (input: string[]): Input => {
-    const values: number[][] = [[]];
-    for (const s of input) {
-        if (s === "") {
-            values.push([]);
-        } else {
-            values.at(-1).push(Number(s));
-        }
-    }
-    return { values };
-}
+  return { values: input.splitOn(e => e === "").map(e => e.num() ) };
+};
 
 export const solve = (input: Input): number => {
-    return Math.max(...input.values.map(e => sum(e)));
-}
+  return input.values.map((e) => e.sum()).max();
+};
 
 console.log(solve(parse(readFile(__dirname))));
