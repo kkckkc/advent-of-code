@@ -17,3 +17,5 @@ export const fill = <T>(count: number, what: T): T[] => {
 export const split = <T>(arr: T[], len: number): T[][] => {
   return range(0, (arr.length / len) - 1).map(l => arr.slice(len * l, len * (l + 1)));
 }
+
+export const sum = (arr: number[]) => arr.reduce((c, a) => c + a, 0);
