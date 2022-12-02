@@ -3,6 +3,7 @@ declare global {
     "sum": () => number,
     "num": () => number[],
     "max": () => number,
+    "min": () => number,
     "sortNum": () => number[],
     "splitOn": (fn: ((t: T) => boolean)) => T[][]
   }
@@ -44,6 +45,12 @@ export const applyPatches = () => {
     max: {
       value: function() {
         return Math.max(...this);
+      },
+      configurable: true
+    },
+    min: {
+      value: function() {
+        return Math.min(...this);
       },
       configurable: true
     },
