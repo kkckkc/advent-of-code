@@ -3,48 +3,27 @@ import { applyPatches } from "lib/patch";
 applyPatches();
 
 type Input = {
-  values: string[][];
+  values: string[];
 };
 
 const SCORE = {
-  'X': 1,
-  'Y': 2, 
-  'Z': 3
-}
-
-const WIN = {
-  'A': {
-    'Z': 0,
-    'X': 3,
-    'Y': 6
-  },
-  'B': {
-    'X': 0,
-    'Y': 3,
-    'Z': 6
-  },
-  'C': {
-    'Y': 0,
-    'Z': 3,
-    'X': 6
-  }
+  "A X": 1 + 3,
+  "A Y": 2 + 6,
+  "A Z": 3 + 0,
+  "B X": 1 + 0,
+  "B Y": 2 + 3,
+  "B Z": 3 + 6,
+  "C X": 1 + 6,
+  "C Y": 2 + 0,
+  "C Z": 3 + 3,
 }
 
 export const parse = (input: string[]): Input => {
-  return { values: input.map(s => s.split(" ")) };
+  return { values: input };
 };
 
 export const solve = (input: Input): number => {
-  let score = 0;
-  for (const [theirs, ours] of input.values) {
-    const result = WIN[theirs][ours];
-    score += result + SCORE[ours];
-  }
-  return score;
+  return input.values.map(a => SCORE[a]).sum();
 };
-
-/*console.log(solve(parse(`A Y
-B X
-C Z`.split('\n'))));*/
 
 console.log(solve(parse(readFile(__dirname))));

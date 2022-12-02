@@ -3,67 +3,27 @@ import { applyPatches } from "lib/patch";
 applyPatches();
 
 type Input = {
-  values: string[][];
+  values: string[];
 };
 
 const SCORE = {
-  'X': 1,
-  'Y': 2, 
-  'Z': 3
-}
-
-const WIN = {
-  'A': {
-    'Z': 0,
-    'X': 3,
-    'Y': 6
-  },
-  'B': {
-    'X': 0,
-    'Y': 3,
-    'Z': 6
-  },
-  'C': {
-    'Y': 0,
-    'Z': 3,
-    'X': 6
-  }
-}
-
-const SELECT = {
-  'A': {
-    'X': 'Z',
-    'Y': 'X',
-    'Z': 'Y'  
-  },
-  'B': {
-    'X': 'X',
-    'Y': 'Y',
-    'Z': 'Z'
-  },
-  'C': {
-    'X': 'Y',
-    'Y': 'Z',
-    'Z': 'X'
-  }
+  "A X": 3 + 0,
+  "A Y": 1 + 3,
+  "A Z": 2 + 6,
+  "B X": 1 + 0,
+  "B Y": 2 + 3,
+  "B Z": 3 + 6,
+  "C X": 2 + 0,
+  "C Y": 3 + 3,
+  "C Z": 1 + 6,
 }
 
 export const parse = (input: string[]): Input => {
-  return { values: input.map(s => s.split(" ")) };
+  return { values: input };
 };
 
 export const solve = (input: Input): number => {
-  let score = 0;
-  for (const [theirs, target] of input.values) {
-    const ours = SELECT[theirs][target];
-    const result = WIN[theirs][ours];
-    score += result + SCORE[ours];
-  }
-  return score;
+  return input.values.map(a => SCORE[a]).sum();
 };
-
-/*console.log(solve(parse(`A Y
-B X
-C Z`.split('\n'))));*/
 
 console.log(solve(parse(readFile(__dirname))));
