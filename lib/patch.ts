@@ -59,7 +59,7 @@ export const applyPatches = () => {
         let arr = [[]]
 
 				for (let i = 0; i < this.length; i++) {
-					if (fn(this[i])) {
+					if (fn(this[i], i)) {
 						arr.push([])
 					} else {
 						arr[arr.length - 1].push(this[i])
