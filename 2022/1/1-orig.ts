@@ -12,9 +12,8 @@ export const parse = (input: string[]): Input => {
 
 export const solve = (input: Input): number => {
   console.dir(input, { depth: 10 });
-  return 0;
+  return input.values.map((e) => e.sum()).max();
 };
 
 // console.log(solve(parse(``.split('\n'))));
-
 console.log(solve(parse(readFile(__dirname))));
