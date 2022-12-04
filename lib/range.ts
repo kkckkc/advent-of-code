@@ -21,4 +21,18 @@ export class Range {
       (this.to >= other.from && this.to <= other.to)
     )
   }
+
+  union(other: Range) {
+    return new Range(Math.min(this.from, other.from), Math.max(this.to, other.to));
+  }
+
+  intersect(other: Range) {
+    const from = Math.max(this.from, other.from);
+    const to = Math.min(this.to, other.to);
+    return new Range(from, to);
+  }
+
+  size() {
+    return this.to - this.from + 1;
+  }
 }

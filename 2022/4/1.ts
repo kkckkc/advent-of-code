@@ -17,7 +17,8 @@ export const parse = (input: string[]): Input => {
 };
 
 export const solve = (input: Input): number => {
-  return input.values.filter((r) => r[0].covers(r[1]) || r[1].covers(r[0]))
+  return input.values
+    .filter(([a, b]) => a.union(b).size() === Math.max(a.size(), b.size()))
     .length;
 };
 

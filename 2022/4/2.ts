@@ -1,5 +1,5 @@
 import { readFile } from "lib/readFile";
-import { Range } from 'lib/range';
+import { Range } from "lib/range";
 import { applyPatches } from "lib/patch";
 applyPatches();
 
@@ -17,8 +17,7 @@ export const parse = (input: string[]): Input => {
 };
 
 export const solve = (input: Input): number => {
-  return input.values.filter((r) => r[0].overlaps(r[1]))
-    .length;
+  return input.values.filter(([a, b]) => a.intersect(b).size() > 0).length;
 };
 
 console.log(solve(parse(readFile(__dirname))));
