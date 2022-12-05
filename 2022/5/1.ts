@@ -28,8 +28,6 @@ export const parse = (input: string[]): Input => {
 };
 
 export const solve = (input: Input): string => {
-  let s = '';
-
   for (const move of input.moves) {
     for (let i = 0; i < move.count; i++) 
       input.stacks[move.to - 1].push(input.stacks[move.from - 1].pop())
