@@ -6,10 +6,14 @@ export const range = (start: number, end: number) => {
   return d;
 }
 
-export const fill = <T>(count: number, what: T): T[] => {
+export const fill = <T>(count: number, what: T | (() => T)): T[] => {
   const d: T[] = [];
   for (let i = 0; i < count; i++) {
-    d.push(what);
+    if (typeof what === 'function') {
+      d.push((what as any)());
+    } else {
+      d.push(what);
+    }
   }
   return d;
 }

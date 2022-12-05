@@ -1,5 +1,6 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
+import { fill } from 'lib/arrays';
 applyPatches();
 
 type Move = { count: number, from: number, to: number };
@@ -10,23 +11,18 @@ type Input = {
 };
 
 export const parse = (input: string[]): Input => {
-  const stacks: string[][] = [[], [], [], [], [], [], [], [], [], []];
+  const stacks: string[][] = fill(9, () => []);
   const moves: Move[] = [];
 
   for (const l of input) {
     if (l.includes('[')) {
-      for (let i = 0; i < 9; i++) {
-        const v = l.charAt(i*4+1);
-        if (v === " ") continue;
-        stacks[i].push(v);
-      }
+      l.split('').filter((_, i) => i % 4 === 1)
+        .forEach((c, i) => c !== " " && stacks[i].unshift(c));
     } else if (l.startsWith("move")) {
-      const [,m,,f,,t] = l.split(" ");
-      moves.push({ count: Number(m), from: Number(f), to: Number(t) })
+      const [,count,,from,,to] = l.split(" ").num();
+      moves.push({ count, from, to })
     }
   }
-
-  stacks.forEach(s => s.reverse());
 
   return { stacks, moves };
 };
