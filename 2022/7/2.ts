@@ -12,7 +12,7 @@ export const parse = (input: string[]): Input => {
 
 type DirEntry = {
   name: string;
-  children: DirEntry[];
+  children?: DirEntry[];
   size?: number;
   type: 'd' | 'f'
 }
@@ -23,57 +23,39 @@ const calcSize = (d: DirEntry): number => {
 }
 
 const findSmallest = (d: DirEntry, maxSize: number): number => {
-  if (d.type === 'f') return 0;  
-  if (d.size >= maxSize) {
-    const matching = d.children
-      .map(e => findSmallest(e, maxSize))
-      .filter(s => s >= maxSize);
-
-    return Math.min(...[...matching, d.size]);
-  }
-  return d.size;
+  if (d.type === 'f' || d.size < maxSize) return 0;  
+  
+  const m = d.children.map(e => findSmallest(e, maxSize)).filter(s => s >= maxSize);
+  return m.min() ?? d.size;
 }
 
 export const solve = (input: Input): number => {
-  const cwd: DirEntry[] = [
-    { 
-      name: '/',
-      children: [],
-      type: 'd'
-    }
-  ];
+  const cwd: DirEntry[] = [];
 
   for (const l of input.values) {
-    if (l.startsWith('$ cd /')) {
-      // ignore
-    } else if (l.startsWith('$ cd ..')) {
+    if (l.startsWith('$ cd ..')) {
       cwd.pop();
     } else if (l.startsWith('$ cd ')) {
-      const [,,dir] = l.split(" ");
-      cwd.push(cwd.at(-1).children.find(a => a.name === dir));
-    } else if (l.startsWith('$ ls')) {
-      // Ignore
+      const [,,name] = l.split(" ");
+      cwd.push(cwd.at(-1)?.children.find(a => a.name === name) ?? {
+        name, children: [], type: 'd'
+      });
     } else if (l.startsWith('dir')) {
       const [,name] = l.split(" ");
       cwd.at(-1).children.push({
-        name,
-        children: [],
-        type: 'd'
+        name, children: [], type: 'd'
       })
-    } else {
+    } else if (l[0].match(/[0-9]/)) {
       const [size,name] = l.split(" ");
       cwd.at(-1).children.push({
-        name,
-        size: Number(size),
-        children: [],
-        type: 'f'
+        name, size: Number(size), type: 'f'
       })
     }
   }
 
   calcSize(cwd[0]);
 
-  return findSmallest(cwd[0], 30000000 - (70000000 - cwd[0].size));
+  return findSmallest(cwd[0], cwd[0].size - 40000000);
 };
 
 console.log(solve(parse(`$ cd /

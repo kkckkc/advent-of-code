@@ -44,13 +44,13 @@ export const applyPatches = () => {
     },
     max: {
       value: function() {
-        return Math.max(...this);
+        return this.length === 0 ? undefined : Math.max(...this);
       },
       configurable: true
     },
     min: {
       value: function() {
-        return Math.min(...this);
+        return this.length === 0 ? undefined : Math.min(...this);
       },
       configurable: true
     },
