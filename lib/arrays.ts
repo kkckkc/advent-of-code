@@ -23,3 +23,9 @@ export const split = <T>(arr: T[], len: number): T[][] => {
 }
 
 export const sum = (arr: number[]) => arr.reduce((c, a) => c + a, 0);
+
+export const column = <T>(arr: T[][], col: number): T[] => {
+  return range(0, arr.length - 1).map(r => arr[r][col]);
+}
+
+export const row = <T>(arr: T[][], row: number): T[] => arr[row];

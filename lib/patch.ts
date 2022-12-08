@@ -5,7 +5,10 @@ declare global {
     "max": () => number,
     "min": () => number,
     "sortNum": () => number[],
-    "splitOn": (fn: ((t: T) => boolean)) => T[][]
+    "splitOn": (fn: ((t: T) => boolean)) => T[][],
+    "splitAt": (n: number) => T[][],
+    "splitBefore": (n: number) => T[][],
+    "splitAfter": (n: number) => T[][],
   }
 
   interface Object {
@@ -69,6 +72,21 @@ export const applyPatches = () => {
 				return arr
       },
       configurable: true
+    },
+    splitAt: {
+      value: function(idx) {
+        return [this.slice(0, idx), this.slice(idx + 1)]
+      }      
+    },
+    splitBefore: {
+      value: function(idx) {
+        return [this.slice(0, idx), this.slice(idx)]
+      }      
+    },
+    splitAfter: {
+      value: function(idx) {
+        return [this.slice(0, idx + 1), this.slice(idx + 1)]
+      }      
     }
   });
 }

@@ -1,3 +1,5 @@
+import { range } from './arrays';
+
 export const Grids = {
   adjacent: (includeSelf=false) => [[-1,-1], [-1,0], [-1,1], ...(includeSelf ? [[0, 0]]: []), [0,-1], [0,1], [1,-1], [1,0], [1,1]],
 
@@ -14,3 +16,46 @@ export const Grids = {
   }
 }
 
+export class Grid<T> {
+  data: T[][];
+  
+  constructor(data: T[][]) {
+    this.data = data;
+  }
+
+  column(col: number): T[] {
+    return range(0, this.data.length - 1).map(r => this.data[r][col]);
+  }
+
+  row(row: number): T[] {
+    return this.data[row];
+  }
+
+  at(row: number, column: number) {
+    return this.data[row][column];
+  }
+
+  width() {
+    return this.data[0].length;
+  }
+
+  height() {
+    return this.data.length;
+  }
+
+  forEachByColumn(cb: ((x: number, y: number, v: T) => void)) {
+    for (let x = 0; x < this.width(); x++) {
+      for (let y = 0; y < this.height(); y++) {
+        cb(x, y, this.at(y, x));
+      }
+    }  
+  }
+
+  forEachByRow(cb: ((x: number, y: number, v: T) => void)) {
+    for (let y = 0; y < this.height(); y++) {
+      for (let x = 0; x < this.width(); x++) {
+        cb(x, y, this.at(y, x));
+      }
+    }  
+  }
+}

@@ -1,6 +1,6 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
-import { range } from "lib/arrays";
+import { Grid } from "lib/grid";
 applyPatches();
 
 type Input = {
@@ -12,30 +12,20 @@ export const parse = (input: string[]): Input => {
 };
 
 export const solve = (input: Input): number => {
-  const w = input.values[0].length;
-  const h = input.values.length;
+  const grid = new Grid(input.values);
 
   let count = 0;
-  for (let x = 1; x < w - 1; x++) {
-    for (let y = 1; y < h - 1; y++) {
-      const beforeRow = range(0, x - 1).map((x2) => input.values[y][x2]);
-      const afterRow = range(x + 1, w - 1).map((x2) => input.values[y][x2]);
-      const beforeCol = range(0, y - 1).map((y2) => input.values[y2][x]);
-      const afterCol = range(y + 1, h - 1).map((y2) => input.values[y2][x]);
 
-      const c = input.values[y][x];
-      if (
-        beforeRow.every((v) => v < c) ||
-        afterRow.every((v) => v < c) ||
-        beforeCol.every((v) => v < c) ||
-        afterCol.every((v) => v < c)
-      ) {
-        count++;
-      }
+  grid.forEachByColumn((x, y, v) => {
+    const [up, down] = grid.column(x).splitAt(y);
+    const [left, right] = grid.row(y).splitAt(x);
+    const fn = (k: number) => k < v;
+    if (up.every(fn) || down.every(fn) || left.every(fn) || right.every(fn)) {
+      count++;
     }
-  }
+  })
 
-  return 2 * w + 2 * h - 4 + count;
+  return count;
 };
 
 console.log(
