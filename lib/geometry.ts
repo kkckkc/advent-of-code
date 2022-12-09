@@ -54,7 +54,9 @@ export const Points = {
 
   manhattanDistance: (p: Point) => Math.abs(p.x) + Math.abs(p.y),
 
-  isOrigin: (p: Point) => p.x === 0 && p.y === 0
+  isOrigin: (p: Point) => p.x === 0 && p.y === 0,
+
+  of: (x: number, y: number) => ({ x, y })
 }
 
 export const Vectors = {
