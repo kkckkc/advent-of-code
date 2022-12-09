@@ -9,8 +9,16 @@ export class Vector<T extends number[]> {
     return new Vector<T>(this.v.map((e, idx) => other.v[idx] + e) as T)
   }
 
+  sub(other: Vector<T>) {
+    return new Vector<T>(this.v.map((e, idx) => other.v[idx] - e) as T)
+  }
+
   toString() {
     return this.v.join(',')
+  }
+
+  clone() {
+    return new Vector<T>([...this.v] as T);
   }
 }
 

@@ -1,5 +1,7 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
+import { V2 } from 'lib/vectors';
+import { range } from 'lib/arrays';
 applyPatches();
 
 type Move = {
@@ -12,10 +14,10 @@ type Input = {
 };
 
 const MOVE = {
-  L: [-1, 0],
-  R: [1, 0],
-  U: [0, -1],
-  D: [0, 1]
+  L: V2.of(-1, 0),
+  R: V2.of(1, 0),
+  U: V2.of(0, -1),
+  D: V2.of(0, 1)
 }
 
 export const parse = (input: string[]): Input => {
@@ -25,21 +27,23 @@ export const parse = (input: string[]): Input => {
   }) };
 };
 
-export const solve = (input: Input): number => {
-  let head = [0, 0];
-  let tail = [0, 0];
+let LENGTH = 2;
 
-  const visited = new Set<string>([`${tail}`]);
+export const solve = (input: Input): number => {
+  const seg = range(1, LENGTH).map(() => V2.of(0, 0));
+  const visited = new Set<string>([`${seg.at(-1)}`]);
 
   for (const move of input.values) {
     for (let i = 0; i < move.count; i++) {
-      const oldHead = head;
-      head = [head[0] + MOVE[move.direction][0], head[1] + MOVE[move.direction][1]];
+      const old = seg.map(e => e.clone());
+      seg[0] = seg[0].add(MOVE[move.direction]);
 
-      if (Math.abs(head[0] - tail[0]) > 1 || Math.abs(head[1] - tail[1]) > 1) {
-        tail = oldHead;
+      for (let s = 1; s < seg.length; s++) {
+        if (seg[s - 1].sub(seg[s]).v.some(k => Math.abs(k) > 1)) 
+          seg[s] = old[s - 1];
       }
-      visited.add(`${tail}`);
+
+      visited.add(`${seg.at(-1)}`);
     }
   }
 
@@ -55,4 +59,13 @@ D 1
 L 5
 R 2`.split('\n'))));
   
+console.log(solve(parse(`R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`.split('\n'))));
+
 console.log(solve(parse(readFile(__dirname))));
