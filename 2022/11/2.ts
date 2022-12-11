@@ -4,7 +4,7 @@ applyPatches();
 
 type Monkey = {
   items: number[];
-  op: string;
+  op: (old) => number;
   test: number;
   testTrue: number;
   testFalse: number;
@@ -24,7 +24,8 @@ export const parse = (input: string[]): Input => {
     if (input[i].startsWith('Monkey ')) {
       dest.push({
         items: getNum(input[i + 1]),
-        op: input[i + 2].split('=')[1],
+        // @ts-ignore
+        op: new Function('old', `return ${input[i + 2].split('=')[1]}`),
         test: getNum(input[i + 3])[0],
         testTrue: getNum(input[i + 4])[0],
         testFalse: getNum(input[i + 5])[0],
@@ -54,9 +55,8 @@ export const solve = (input: Input): number => {
 
         const itemIdx = monkey.items[i];
 
-        // @ts-ignore
         items[itemIdx] = items[itemIdx].map((old, idx) => {
-          return eval(monkey.op) % input.values[idx].test;
+          return monkey.op(old) % input.values[idx].test;
         })
 
         if (items[itemIdx][m] === 0) {
