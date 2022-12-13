@@ -1,6 +1,7 @@
 declare global {
   interface Array<T> {
     "sum": () => number,
+    "prod": () => number,
     "num": () => number[],
     "max": () => number,
     "min": () => number,
@@ -30,6 +31,12 @@ export const applyPatches = () => {
     sum: {
       value: function() {
         return this.reduce((a, b) => a + b, 0)
+      },
+      configurable: true
+    },
+    prod: {
+      value: function() {
+        return this.reduce((a, b) => a * b, 1)
       },
       configurable: true
     },
