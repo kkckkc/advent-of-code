@@ -14,6 +14,8 @@ export const parse = (input: string[]): Input => {
   return { values: input.filter(e => e !== '').map(e => eval(e)) };
 };
 
+const asArray = (a: any | any[]) => Array.isArray(a) ? a : [ a ];
+
 const isRightOrder = (lhs: any, rhs: any) => {
   if (typeof lhs === 'number' && typeof rhs === 'number') {
     return lhs === rhs ? undefined : lhs < rhs;
@@ -25,7 +27,7 @@ const isRightOrder = (lhs: any, rhs: any) => {
     }
     return lhs.length < rhs.length ? true : undefined;
   }
-  return isRightOrder(Array.isArray(lhs) ? lhs : [lhs], Array.isArray(rhs) ? rhs : [rhs]);
+  return isRightOrder(asArray(lhs), asArray(rhs));
 }
 
 export const solve = (input: Input): number => {
