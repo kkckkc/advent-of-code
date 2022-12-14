@@ -1,7 +1,13 @@
 export const range = (start: number, end: number) => {
   const d = [];
-  for (let i = start; i <= end; i++) {
-    d.push(i);
+  if (start > end) {
+    for (let i = start; i >= end; i--) {
+      d.push(i);
+    }
+  } else {
+    for (let i = start; i <= end; i++) {
+      d.push(i);
+    }
   }
   return d;
 }
