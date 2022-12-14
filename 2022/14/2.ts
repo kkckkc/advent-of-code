@@ -11,29 +11,24 @@ export const parse = (input: string[]): Input => {
   return { values: input.map(l => l.split(' -> ').map(e => e.split(',').num())) };
 };
 
-const printGrid = (grid: string[][], minw: number, maxw: number) => {
-  for (const l of grid) {
-    console.log(l.slice(minw - 1, maxw + 1).join(''))
-  }
-  console.log();
-}
-
 export const solve = (input: Input): number => {
   const lines = input.values;
-  let maxWidth = lines.flatMap(l => l.map(e => e[0])).max();
-  let height = lines.flatMap(l => l.map(e => e[1])).max();
+
+  const maxWidth = lines.flatMap(l => l.map(e => e[0])).max();
+  const height = lines.flatMap(l => l.map(e => e[1])).max();
 
   const grid = range(0, height + 2).map(() => range(0, maxWidth * 2).map(() => '.'));
+  range(0, maxWidth * 2).forEach(c => grid[height + 2][c] = '#')
 
-  for (let l of lines) {
-    let s = l[0];
-    for (let i = 1; i < l.length; i++) {
-      if (s[0] === l[i][0]) {
-        range(s[1], l[i][1]).forEach((r) => grid[r][s[0]] = '#')
+  for (let line of lines) {
+    let s = line[0];
+    for (let pos of line) {
+      if (s[0] === pos[0]) {
+        range(s[1], pos[1]).forEach((r) => grid[r][s[0]] = '#')
       } else {
-        range(s[0], l[i][0]).forEach((c) => grid[s[1]][c] = '#')
+        range(s[0], pos[0]).forEach((c) => grid[s[1]][c] = '#')
       }
-      s = l[i];
+      s = pos;
     }
   }
 
@@ -41,21 +36,16 @@ export const solve = (input: Input): number => {
     let sX = 500;
 
     for (let r = 0; ; r++) {
-      if (r === height + 1) {
-        grid[r][sX] = 'o';
-        break;
-      }
-      if (grid[r + 1][sX] === '.') {
-      } else if (grid[r + 1][sX - 1] === '.') {
-        sX--;
-      } else if (grid[r + 1][sX + 1] === '.') {
-        sX++;
+      const xOff = [0, -1, 1].find(o => grid[r + 1][sX + o] === '.');
+      if (xOff !== undefined) {
+        sX += xOff;
       } else {
         grid[r][sX] = 'o';
-        if (r === 0 && sX === 500) return sandCount + 1;
         break;
       }
     }
+
+    if (grid[0][500] === 'o') return sandCount + 1;
   }
 };
 
