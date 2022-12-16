@@ -1,18 +1,13 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
-import { stringify } from 'querystring';
-import { Stats } from 'fs';
 applyPatches();
 
-type Valve = {
-  id: string;
-  flow: number;
-  leadsTo: string[];
-}
-
 type Input = {
-  values: Valve[];
+  values: { id: string; flow: number; leadsTo: string[]; }[];
 };
+
+const ALL_MOVING: any[] = ['moving', 'moving'];
+const MIN_COUNT = 26;
 
 export const parse = (input: string[]): Input => {
   return { values: input.map(l => {
@@ -30,7 +25,6 @@ type State = {
   accumulatedFlow: number;
   currentFlow: number;
   state: ('moving' | 'opening')[];
-  log: string[]
 }
 
 const cloneAndSet = <T>(arr: T[], pos: number, newVal: T): T[] => {
@@ -40,7 +34,7 @@ const cloneAndSet = <T>(arr: T[], pos: number, newVal: T): T[] => {
 }
 
 const addState = (target: Record<string, State>, pos: string[], s: State, remain: number) => {
-  const key = `${pos[0]},${s.state[0]},${pos[1]},${s.state[1]}`;
+  const key = pos[0] + pos[1] + s.state[0] + s.state[1]; 
   const existing = target[key];
   if (existing && (existing.accumulatedFlow + existing.currentFlow * remain) >= (s.accumulatedFlow + s.currentFlow * remain)) return;
   target[key] = s;
@@ -49,22 +43,17 @@ const addState = (target: Record<string, State>, pos: string[], s: State, remain
 export const solve = (input: Input): number => {
   const valves = Object.fromEntries(input.values.map(v => [v.id, v]));
 
-  const ALL_MOVING: any[] = ['moving', 'moving'];
-
   let states: Record<string, State> = {
     '': {
       pos: ['AA', 'AA'],
       open: [],
       accumulatedFlow: 0,
       currentFlow: 0,
-      state: ALL_MOVING,
-      log: []
+      state: ALL_MOVING
     }
   }
 
   let min = 1;
-
-  const MIN_COUNT = 26;
   while (min <= MIN_COUNT) {
     let cycleStates = Object.values(states); 
     for (let actor = 0; actor < 2; actor++) {
@@ -80,7 +69,7 @@ export const solve = (input: Input): number => {
             open: [...open, state.pos[actor]]
           })
         }
-          
+        
         for (const p of valves[pos[actor]].leadsTo) {
           newStates.push({
             ...state,
@@ -103,8 +92,8 @@ export const solve = (input: Input): number => {
       s.currentFlow += (
         (s.state[0] === 'opening' ? valves[s.pos[0]].flow : 0) +
         (s.state[1] === 'opening' ? valves[s.pos[1]].flow : 0)
-      )
-      s.state = ALL_MOVING
+      );
+      s.state = ALL_MOVING;
     })
 
     min++;
