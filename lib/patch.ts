@@ -5,6 +5,8 @@ declare global {
     "num": () => number[],
     "max": () => number,
     "min": () => number,
+    "add": (arr: T[]) => T[],
+    "key": () => string,
     "sortNum": () => number[],
     "splitOn": (fn: ((t: T) => boolean)) => T[][],
     "splitAt": (n: number) => T[][],
@@ -43,6 +45,18 @@ export const applyPatches = () => {
     num: {
       value: function() {
         return this.map(e => +e);
+      },
+      configurable: true
+    },
+    add: {
+      value: function(arr: any[]) {
+        return this.map((e, idx) => e + arr[idx]);
+      },
+      configurable: true
+    },
+    key: {
+      value: function() {
+        return this.join(',')
       },
       configurable: true
     },
