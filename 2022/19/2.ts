@@ -1,5 +1,6 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
+import { range } from 'lib/arrays';
 applyPatches();
 
 
@@ -19,6 +20,8 @@ export const parse = (input: string[]): Input => {
 };
 
 const best = (q: [number, number[], number[]][], blueprint: number[][]) => {
+  let m =  range(0, 3).map(i => blueprint.map(b => b[i]).max());
+
   let c = 0;
   let b = 0;
   while (q.length > 0) {
@@ -29,32 +32,25 @@ const best = (q: [number, number[], number[]][], blueprint: number[][]) => {
     if (min === 0) continue;
 
     let canBuildGeode = false;
-    let something = false;
     for (let r = 3; r >= 0; r--) {
-      if (!canBuildGeode && stash.every((m, idx) => m >= blueprint[r][idx])) {
-        if (r === 3/* || r === 2*/) canBuildGeode = true;
+      if (r !== 3 && robots[r] >= m[r]) continue;
+      if (canBuildGeode) continue;
+      if ((stash[3] + robots[3] * min + ((min) * (min - 1)) / 2) <= b) continue;
 
-//        if (r === 2 && robots[2] > 12) continue;
-//        if (r === 1 && robots[1] > 20) continue;
-        if (r === 0 && robots[0] > 4) continue;
-
+      if (stash.every((m, idx) => m >= blueprint[r][idx])) {
+        if (r === 3) canBuildGeode = true;
         if ((stash[3] + robots[3] * min + ((min) * (min - 1)) / 2) <= b) continue;
 
         const newRobots = [...robots];
         newRobots[r]++;
   
-        const newStash = stash.add(robots);
-        for (let i = 0; i < 4; i++) {
-          newStash[i] -= blueprint[r][i];
-        }
-
+        const newStash = stash.map((s, i) => s + robots[i] - blueprint[r][i]);
         q.push([min - 1, newRobots, newStash]);
         c++;
-        something = true;
       }
     }
 
-    if (!canBuildGeode && (stash[0] < 5 || !something)) {
+    if (!canBuildGeode && stash[0] < 4) {
       q.push([min - 1, robots, stash.add(robots)]);
       c++;
     }
