@@ -24,31 +24,39 @@ const best = (q: [number, number[], number[]][], blueprint: number[][]) => {
   while (q.length > 0) {
     const a = q.pop() as any;
     const [min, robots, stash] = a;
-    if (min === 0) {
-      b = Math.max(b, stash[3]);
-    } else {
-      let canBuildGeode = false;
-      for (let r = 3; r >= 0; r--) {
-        if (!canBuildGeode && stash.every((m, idx) => m >= blueprint[r][idx])) {
-          if (r === 3 || r === 2) canBuildGeode = true;
+    b = Math.max(b, stash[3]);
 
-          const newRobots = [...robots];
-          newRobots[r]++;
-    
-          const newStash = stash.add(robots);
-          for (let i = 0; i < 4; i++) {
-            newStash[i] -= blueprint[r][i];
-          }
-    
-          q.push([min - 1, newRobots, newStash]);
-          c++;
+    if (min === 0) continue;
+
+    let canBuildGeode = false;
+    let something = false;
+    for (let r = 3; r >= 0; r--) {
+      if (!canBuildGeode && stash.every((m, idx) => m >= blueprint[r][idx])) {
+        if (r === 3/* || r === 2*/) canBuildGeode = true;
+
+//        if (r === 2 && robots[2] > 12) continue;
+//        if (r === 1 && robots[1] > 20) continue;
+        if (r === 0 && robots[0] > 4) continue;
+
+        if ((stash[3] + robots[3] * min + ((min) * (min - 1)) / 2) <= b) continue;
+
+        const newRobots = [...robots];
+        newRobots[r]++;
+  
+        const newStash = stash.add(robots);
+        for (let i = 0; i < 4; i++) {
+          newStash[i] -= blueprint[r][i];
         }
-      }
 
-      if (!canBuildGeode && stash[0] < 5) {
-        q.push([min - 1, robots, stash.add(robots)]);
+        q.push([min - 1, newRobots, newStash]);
         c++;
+        something = true;
       }
+    }
+
+    if (!canBuildGeode && (stash[0] < 5 || !something)) {
+      q.push([min - 1, robots, stash.add(robots)]);
+      c++;
     }
   }
 
