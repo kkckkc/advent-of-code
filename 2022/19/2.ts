@@ -35,7 +35,6 @@ const best = (q: [number, number[], number[]][], blueprint: number[][]) => {
     for (let r = 3; r >= 0; r--) {
       if (r !== 3 && robots[r] >= m[r]) continue;
       if (canBuildGeode) continue;
-      if ((stash[3] + robots[3] * min + ((min) * (min - 1)) / 2) <= b) continue;
 
       if (stash.every((m, idx) => m >= blueprint[r][idx])) {
         if (r === 3) canBuildGeode = true;
@@ -66,11 +65,9 @@ export const solve = (input: Input): number => {
   let score = 1;
 
   for (let b = 0; b < input.values.length && b < 3; b++) {
-
-    const cache: Record<string, number> = {};
-    let q: [number, number[], number[]][] = [[32, [1, 0, 0, 0], [0, 0, 0, 0]]];
-    let a = best(q, input.values[b])
-    console.log(a, Object.keys(cache).length);
+    const q: [number, number[], number[]][] = [[32, [1, 0, 0, 0], [0, 0, 0, 0]]];
+    const a = best(q, input.values[b])
+    console.log(a);
     score *= a;
   }
 
