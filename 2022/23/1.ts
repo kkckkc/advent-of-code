@@ -1,6 +1,7 @@
 import { readFile } from "lib/readFile";
 import { applyPatches } from "lib/patch";
 import { range } from 'lib/arrays';
+import { MultiMap } from 'lib/bag';
 applyPatches();
 
 type Input = {
@@ -36,29 +37,6 @@ let all = [
 ]
 
 
-const printBoard = (round: number, current: number[][]) => {
-  console.log(`== End of Round ${round + 1} ==`)
-
-  let minRow = current.map(c => c[0]).min();
-  let maxRow = current.map(c => c[0]).max();
-  let minCol = current.map(c => c[1]).min();
-  let maxCol = current.map(c => c[1]).max();
-
-  let cur = new Set(current.map(c => c.join(',')))
-
-  for (let r of range(minRow, maxRow)) {
-    let l: string[] = [];
-    for (let c of range(minCol, maxCol)) {
-      if (cur.has([r, c].key())) {
-        l.push('#')
-      } else {
-        l.push('.')
-      }
-    }
-    console.log(l.join(''))
-  }
-  console.log();
-}
 
 export const solve = (input: Input): number => {
   let current = input.values;
@@ -66,37 +44,32 @@ export const solve = (input: Input): number => {
   let direction = 0;
   let len = current.length;
 
-//  printBoard(-1, current);
-
   for (let round = 0; round < 10; round++) {
-    let proposed: Record<string, number[]> = {};
-    let cur = new Set(current.map(c => c.join(',')))
+    const proposed = new MultiMap<string, number>;
+    const curSet = new Set(current.map(c => c.key())); 
 
     for (let e = 0; e < current.length; e++) {
+      const cur = current[e];
+
       let found = false;
 
-      if (all.some(p => cur.has(current[e].add(p).key()))) {
-        for (let d = 0; d < 4; d++) {
-          let dir = directions[(direction + d) % 4];
-          if (positions[dir].every(p => !cur.has(p.add(current[e]).key()))) {
-            const prop = current[e].add(positions[dir][1]);
-            proposed[prop.key()] = proposed[prop.key()] ?? [];
-            proposed[prop.key()].push(e);
+      if (all.some(p => curSet.has(cur.add(p).key()))) {
+        for (let d = 0; d < 4 && !found; d++) {
+          const dir = directions[(direction + d) % 4];
+          if (positions[dir].every(p => !curSet.has(p.add(cur).key()))) {
+            proposed.add(cur.add(positions[dir][1]).key(), e);
             found = true;
-            break;
           }
         }
       }
 
       if (! found) {
-        const prop = current[e];
-        proposed[prop.key()] = proposed[prop.key()] ?? [];
-        proposed[prop.key()].push(e);
+        proposed.add(cur.key(), e);
       }
     }
 
-    let newCurrent: number[][] = [];
-    for (const [p, arr] of Object.entries(proposed)) {
+    const newCurrent: number[][] = [];
+    for (const [p, arr] of Object.entries(proposed.map)) {
       if (arr.length === 1) {
         newCurrent.push(p.split(',').num())
       } else {
@@ -104,8 +77,6 @@ export const solve = (input: Input): number => {
       }
     }
     current = newCurrent;
-
-//    printBoard(round, current);
     direction++;
   }
 
