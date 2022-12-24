@@ -51,4 +51,8 @@ export class MultiMap<K extends string | number, V> {
   get(key: K) {
     return this.map[key]
   }
+
+  has(key: K) {
+    return key in this.map;
+  }
 }

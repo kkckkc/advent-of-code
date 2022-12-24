@@ -86,12 +86,11 @@ export const solve = (input: Input): number => {
   return (width + 1) * (height + 1) - len;
 };
 
-console.log(solve(parse(`....#..
-..###.#
-#...#.#
-.#...##
-#.###..
-##.#.##
-.#..#..`.split('\n'))));
+console.log(solve(parse(`#.######
+#>>.<^<#
+#.<..<<#
+#>v.><>#
+#<^v^^>#
+######.#`.split('\n'))));
 
 console.log(solve(parse(readFile(__dirname))));
