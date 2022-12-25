@@ -26,11 +26,11 @@ const ENCODE = {
   [-2]: '='
 }
 
-const encode = (v: number) => {
-//  console.log('--', v);
+let MAX = 22;
 
+const encode = (v: number) => {
   let dest = [];
-  for (let i = 22; i >= 0; i--) {
+  for (let i = MAX; i >= 0; i--) {
     const base = Math.pow(5, i);
     let c = 0;
     while (v >= base) {
@@ -40,22 +40,12 @@ const encode = (v: number) => {
     dest.push(c);
   }
 
-//  console.log('--', dest);
-
   for (let i = dest.length - 1; i >= 0; i--) {
-    if (dest[i] === 3) {
+    if (dest[i] >= 3) {
       dest[i - 1]++;
-      dest[i] = -2;
-    } else if (dest[i] === 4) {
-      dest[i - 1]++;
-      dest[i] = -1;
-    } else if (dest[i] === 5) {
-      dest[i - 1]++;
-      dest[i] = 0;
+      dest[i] = dest[i] - 5;
     }
   }
-
-//  console.log('--', dest);
 
   for (let i = 0; i < dest.length; i++) {
     if (dest[i] !== 0) {
@@ -63,7 +53,7 @@ const encode = (v: number) => {
     }
   }
 
-  return 'OVERFLOW';
+  throw new Error();
 }
 
 
@@ -71,18 +61,12 @@ export const solve = (input: Input): string => {
   let acc = 0;
 
   for (const line of input.values) {
-    let len = line.length;
-    let v = 0;
-    for (let i = 0; i < len; i++) {
-      v += DECODE[line.charAt(i)] * Math.pow(5, (len - i - 1));
-    }
-    //console.log(line, v, encode(v));
-    acc += v;
+    acc += line.split('').reduce(
+      (p, c, i) => p + DECODE[c] * Math.pow(5, line.length - i - 1), 
+    0)
   }
 
- //console.log(encode(1747))
   return encode(acc);
-  //return '';
 };
 
 console.log(solve(parse(`1=-0-2
